@@ -10,6 +10,8 @@ namespace CalculadoraPrefijoSP
         public static bool a = true;
         public static int valor = 0;
         public static int result;
+        public static double result2;
+
         public static string temporary = "";
         static void Main(string[] args)
         {
@@ -27,89 +29,98 @@ namespace CalculadoraPrefijoSP
                             Console.WriteLine("Ingrese la Expresion Entera");
                             String cadenaAux = Console.ReadLine().ToString();
                             String cadena = string.Concat(cadenaAux, "$");
-                            Stack polishNotationStack = new Stack();
+                            Stack IntStack = new Stack();
                             char[] characters = cadena.ToCharArray();
                             i = 0;
                             l = getChara(characters);
                             LEXP(characters);
-                            if (l == '$' && a && characters.Length > 1)
+                            if (l == '$' && a && characters.Length > 1 )
                             {
                                 Console.ForegroundColor = ConsoleColor.Green;
                                 char[] expression = cadenaAux.ToCharArray();
                                 Array.Reverse(expression);
                                 int n;
                                 Console.WriteLine("------------PARSING SUCCESS-----------");
-                                foreach (char c in expression)//for each string character in the array
+                                if(int.TryParse(cadenaAux.ToString(), out result))
                                 {
-                                    if (c != ' ' && c != '(' && c != ')')
-                                    {
-                                        if (int.TryParse(c.ToString(), out n))//if the character can be converted to a number (operand)
-                                        {
-                                            temporary = string.Concat(temporary, c.ToString());
-                                        }
-                                        if (c == '+')//handling of operators
-                                        {
-                                            string temp = Reverse(temporary);
-                                            int.TryParse(temp, out n);
-                                            polishNotationStack.Push(n);//push current value onto the stack
-                                            int x = Convert.ToInt32(polishNotationStack.Pop());
-                                            int y = Convert.ToInt32(polishNotationStack.Pop());
-                                            result = x + y;//evaluate the values popped from the stack
-                                            polishNotationStack.Push(result);//push current result onto the stack
-                                            temporary = "";
-                                        }
-                                        if (c == '-')
-                                        {
-                                            string temp = Reverse(temporary);
-                                            int.TryParse(temp, out n);
-                                            polishNotationStack.Push(n);
-                                            int x = Convert.ToInt32(polishNotationStack.Pop());
-                                            int y = Convert.ToInt32(polishNotationStack.Pop());
-                                            result = y - x;
-                                            polishNotationStack.Push(result);
-                                            temporary = "";
-                                        }
-                                        if (c == '*')
-                                        {
-                                            string temp = Reverse(temporary);
-                                            int.TryParse(temp, out n);
-                                            polishNotationStack.Push(n);
-                                            int x = Convert.ToInt32(polishNotationStack.Pop());
-                                            int y = Convert.ToInt32(polishNotationStack.Pop());
-                                            result = x * y;
-                                            polishNotationStack.Push(result);
-                                            temporary = "";
-                                        }
-                                        if (c == '/')
-                                        {
-                                            string temp = Reverse(temporary);
-                                            int.TryParse(temp, out n);
-                                            polishNotationStack.Push(n);
-                                            int x = Convert.ToInt32(polishNotationStack.Pop());
-                                            int y = Convert.ToInt32(polishNotationStack.Pop());
-                                            result = y / x;
-                                            polishNotationStack.Push(result);
-                                            temporary = "";
-                                        }
-
-                                    }
-
-                                    if (c == ' ')
-                                    {
-
-                                        if (temporary != "")
-                                        {
-                                            string temp = Reverse(temporary);
-                                            int.TryParse(temp, out n);
-                                            polishNotationStack.Push(n);
-                                            temporary = "";
-                                        }
-
-                                    }
+                                    Console.WriteLine("result of expression: {0}", result);
                                 }
-                                /*write the final result of the expression,
-                                 * which is at the top of the stack, so we use Peek()*/
-                                Console.WriteLine("result of expression: {0}", polishNotationStack.Peek());
+                                else
+                                {
+                                    foreach (char c in expression)//for each string character in the array
+                                    {
+                                        if (c != ' ' && c != '(' && c != ')')
+                                        {
+                                            if (int.TryParse(c.ToString(), out n))//if the character can be converted to a number (operand)
+                                            {
+                                                temporary = string.Concat(temporary, c.ToString());
+                                            }
+                                            if (c == '+')//handling of operators
+                                            {
+                                                string temp = Reverse(temporary);
+                                                int.TryParse(temp, out n);
+                                                IntStack.Push(n);//push current value onto the stack
+                                                int x = Convert.ToInt32(IntStack.Pop());
+                                                int y = Convert.ToInt32(IntStack.Pop());
+                                                result = x + y;//evaluate the values popped from the stack
+                                                IntStack.Push(result);//push current result onto the stack
+                                                temporary = "";
+                                            }
+                                            if (c == '-')
+                                            {
+                                                string temp = Reverse(temporary);
+                                                int.TryParse(temp, out n);
+                                                IntStack.Push(n);
+                                                int x = Convert.ToInt32(IntStack.Pop());
+                                                int y = Convert.ToInt32(IntStack.Pop());
+                                                result = y - x;
+                                                IntStack.Push(result);
+                                                temporary = "";
+                                            }
+                                            if (c == '*')
+                                            {
+                                                string temp = Reverse(temporary);
+                                                int.TryParse(temp, out n);
+                                                IntStack.Push(n);
+                                                int x = Convert.ToInt32(IntStack.Pop());
+                                                int y = Convert.ToInt32(IntStack.Pop());
+                                                result = x * y;
+                                                IntStack.Push(result);
+                                                temporary = "";
+                                            }
+                                            if (c == '/')
+                                            {
+                                                string temp = Reverse(temporary);
+                                                int.TryParse(temp, out n);
+                                                IntStack.Push(n);
+                                                int x = Convert.ToInt32(IntStack.Pop());
+                                                int y = Convert.ToInt32(IntStack.Pop());
+                                                result = y / x;
+                                                IntStack.Push(result);
+                                                temporary = "";
+                                            }
+
+                                        }
+
+                                        if (c == ' ')
+                                        {
+
+                                            if (temporary != "")
+                                            {
+                                                string temp = Reverse(temporary);
+                                                int.TryParse(temp, out n);
+                                                IntStack.Push(n);
+                                                temporary = "";
+                                            }
+
+                                        }
+                                    }
+                                    /*write the final result of the expression,
+                                     * which is at the top of the stack, so we use Peek()*/
+                                    Console.WriteLine("result of expression: {0}", IntStack.Peek());
+                                }
+
+                                
                             }
                             else
                             {
@@ -129,6 +140,7 @@ namespace CalculadoraPrefijoSP
                             Console.WriteLine("Ingrese la Expresion Flotante");
                             String cadenaAux = Console.ReadLine().ToString();
                             String cadena = string.Concat(cadenaAux, "$");
+                            Stack StackFloat = new Stack();
                             char[] characters = cadena.ToCharArray();
                             i = 0;
                             l = getChara(characters);
@@ -136,8 +148,87 @@ namespace CalculadoraPrefijoSP
                             if (l == '$' && a && characters.Length > 1)
                             {
                                 Console.ForegroundColor = ConsoleColor.Green;
+                                char[] expression = cadenaAux.ToCharArray();
+                                Array.Reverse(expression);
+                                double n ;
+                                int n1 ;
                                 Console.WriteLine("------------PARSING SUCCESS-----------");
-
+                                
+                                if(double.TryParse(cadenaAux.ToString(), out result2))
+                                {
+                                    Console.WriteLine("result of expression: {0}", result2);
+                                }
+                                else
+                                {
+                                    foreach (char c in expression)//for each string character in the array
+                                    {
+                                        if (c != ' ' && c != '(' && c != ')')
+                                        {
+                                            if (int.TryParse(c.ToString(), out n1) || c == '.')//if the character can be converted to a number (operand)
+                                            {
+                                                temporary = string.Concat(temporary, c.ToString());
+                                            }
+                                            if (c == '+')//handling of operators
+                                            {
+                                                string temp = Reverse(temporary);
+                                                double.TryParse(temp, out n);
+                                                StackFloat.Push(n);//push current value onto the stack
+                                                double x = Convert.ToDouble(StackFloat.Pop());
+                                                double y = Convert.ToDouble(StackFloat.Pop());
+                                                result2 = x + y;//evaluate the values popped from the stack
+                                                StackFloat.Push(result2);//push current result onto the stack
+                                                temporary = "";
+                                            }
+                                            if (c == '-')
+                                            {
+                                                string temp = Reverse(temporary);
+                                                double.TryParse(temp, out n);
+                                                StackFloat.Push(n);
+                                                double x = Convert.ToDouble(StackFloat.Pop());
+                                                double y = Convert.ToDouble(StackFloat.Pop());
+                                                result2 = y - x;
+                                                StackFloat.Push(result2);
+                                                temporary = "";
+                                            }
+                                            if (c == '*')
+                                            {
+                                                string temp = Reverse(temporary);
+                                                double.TryParse(temp, out n);
+                                                StackFloat.Push(n);
+                                                double x = Convert.ToDouble(StackFloat.Pop());
+                                                double y = Convert.ToDouble(StackFloat.Pop());
+                                                result2 = x * y;
+                                                StackFloat.Push(result2);
+                                                temporary = "";
+                                            }
+                                            if (c == '/')
+                                            {
+                                                string temp = Reverse(temporary);
+                                                double.TryParse(temp, out n);
+                                                StackFloat.Push(n);
+                                                double x = Convert.ToDouble(StackFloat.Pop());
+                                                double y = Convert.ToDouble(StackFloat.Pop());
+                                                result2 = y / x;
+                                                StackFloat.Push(result2);
+                                                temporary = "";
+                                            }
+                                        }
+                                        if (c == ' ')
+                                        {
+                                            if (temporary != "")
+                                            {
+                                                string temp = Reverse(temporary);
+                                                double.TryParse(temp, out n);
+                                                StackFloat.Push(n);
+                                                temporary = "";
+                                            }
+                                        }
+                                    }
+                                    /*write the final result of the expression,
+                                     * which is at the top of the stack, so we use Peek()*/
+                                    Console.WriteLine("result of expression: {0}", StackFloat.Peek());
+                                }
+                                
                             }
                             else
                             {
@@ -154,9 +245,10 @@ namespace CalculadoraPrefijoSP
                     case "3":
                         {
                             Console.ForegroundColor = ConsoleColor.Cyan;
-                            Console.WriteLine("Ingrese la Expresion Entera y/o Flotante");
+                            Console.WriteLine("Ingrese la Expresion de Enteros y Flotantes");
                             String cadenaAux = Console.ReadLine().ToString();
                             String cadena = string.Concat(cadenaAux, "$");
+                            Stack StackFloatInt = new Stack();
                             char[] characters = cadena.ToCharArray();
                             i = 0;
                             l = getChara(characters);
@@ -164,8 +256,86 @@ namespace CalculadoraPrefijoSP
                             if (l == '$' && a && characters.Length > 1)
                             {
                                 Console.ForegroundColor = ConsoleColor.Green;
+                                char[] expression = cadenaAux.ToCharArray();
+                                Array.Reverse(expression);
+                                double n;
+                                int n1;
                                 Console.WriteLine("------------PARSING SUCCESS-----------");
 
+                                if (double.TryParse(cadenaAux.ToString(), out result2))
+                                {
+                                    Console.WriteLine("result of expression: {0}", result2);
+                                }
+                                else
+                                {
+                                    foreach (char c in expression)//for each string character in the array
+                                    {
+                                        if (c != ' ' && c != '(' && c != ')')
+                                        {
+                                            if (int.TryParse(c.ToString(), out n1) || c == '.')//if the character can be converted to a number (operand)
+                                            {
+                                                temporary = string.Concat(temporary, c.ToString());
+                                            }
+                                            if (c == '+')//handling of operators
+                                            {
+                                                string temp = Reverse(temporary);
+                                                double.TryParse(temp, out n);
+                                                StackFloatInt.Push(n);//push current value onto the stack
+                                                double x = Convert.ToDouble(StackFloatInt.Pop());
+                                                double y = Convert.ToDouble(StackFloatInt.Pop());
+                                                result2 = x + y;//evaluate the values popped from the stack
+                                                StackFloatInt.Push(result2);//push current result onto the stack
+                                                temporary = "";
+                                            }
+                                            if (c == '-')
+                                            {
+                                                string temp = Reverse(temporary);
+                                                double.TryParse(temp, out n);
+                                                StackFloatInt.Push(n);
+                                                double x = Convert.ToDouble(StackFloatInt.Pop());
+                                                double y = Convert.ToDouble(StackFloatInt.Pop());
+                                                result2 = y - x;
+                                                StackFloatInt.Push(result2);
+                                                temporary = "";
+                                            }
+                                            if (c == '*')
+                                            {
+                                                string temp = Reverse(temporary);
+                                                double.TryParse(temp, out n);
+                                                StackFloatInt.Push(n);
+                                                double x = Convert.ToDouble(StackFloatInt.Pop());
+                                                double y = Convert.ToDouble(StackFloatInt.Pop());
+                                                result2 = x * y;
+                                                StackFloatInt.Push(result2);
+                                                temporary = "";
+                                            }
+                                            if (c == '/')
+                                            {
+                                                string temp = Reverse(temporary);
+                                                double.TryParse(temp, out n);
+                                                StackFloatInt.Push(n);
+                                                double x = Convert.ToDouble(StackFloatInt.Pop());
+                                                double y = Convert.ToDouble(StackFloatInt.Pop());
+                                                result2 = y / x;
+                                                StackFloatInt.Push(result2);
+                                                temporary = "";
+                                            }
+                                        }
+                                        if (c == ' ')
+                                        {
+                                            if (temporary != "")
+                                            {
+                                                string temp = Reverse(temporary);
+                                                double.TryParse(temp, out n);
+                                                StackFloatInt.Push(n);
+                                                temporary = "";
+                                            }
+                                        }
+                                    }
+                                    /*write the final result of the expression,
+                                     * which is at the top of the stack, so we use Peek()*/
+                                    Console.WriteLine("result of expression: {0}", StackFloatInt.Peek());
+                                }
                             }
                             else
                             {
